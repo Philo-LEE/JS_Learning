@@ -14,7 +14,7 @@ try{
     }
 
 }catch(e){
-    console.log('해당값이 아닙니다.');
+    console.log(e.message); //e.message에 Error에서 던졌던 문자열이 들어가있다. 타고들어가보면 name, message 등 다양한 프로퍼티가 있는걸 확인할수이따
 }finally{
     console.log('이건 어떻게든 실행이되는 코드입니다');
 }
