@@ -79,9 +79,12 @@ console.log(siHyeon.sayName());
  * 알아둘 점.
  * 자바스크립트가 너무 오래되다보니 클래스는 함수로표시됩니다.
  * 그러나 클래스로 인해서 찍어낸 인스턴스는 object로 정상적으로 표시됩니다.
- * 왜 클래스가 함수가 될 수 있는지에 대해서 알아보겠습니다.
+ * 다음 시간에는 클래스가 어떻게 함수가 될 수 있는지에 대해 알아보겠습니다.
  */
 
 console.log(typeof IdolModel3); // function
 console.log(typeof siHyeon); // object
 
+
+
+console.log(typeof siHyeon);
