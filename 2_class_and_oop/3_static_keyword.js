@@ -5,9 +5,9 @@
  * 만약 아래의 아이돌모델로 인스턴스를 100개 만든다면 
  * 힙에 인스턴스별로 name과 year가 각각 100개씩 생성됩니다.
  * 
- * 그러나 static으로 선언된 프로퍼티는 힙에있는 클래스에 저장됩니다.
+ * 그러나 static으로 선언된 필드는 힙에있는 클래스 객체에 붙습니다.
  * 
- * static 프로퍼티는 객체가 아니라 클래스 함수 객체에 저장됩니다.
+ * static 필드는 static에 있는 prototype 프로퍼티에 아니라 클래스 함수 객체에 저장됩니다.
  * JAVA처럼 클래스에 귀속되고 만들어진 인스턴스끼리 공유가 가능합니다.
  */
 
@@ -44,6 +44,8 @@ class IdolModel{
 
 const yuJin = new IdolModel('안유진', 2003);
 
+
+
 console.log(yuJin); // IdolModel { name: '안유진', year: 2003 }
 console.log(yuJin.groupName); //undefined
 console.log(IdolModel.groupName); //Ive
@@ -67,6 +69,7 @@ console.log(IdolModel.groupName); //Ive
  */
 
 class IdolModel2 {
+    static test = 'test';
     name;
     year;
     
@@ -90,6 +93,10 @@ class IdolModel2 {
             list[1],
         );
     }
+
+    testMethode(){
+        return `goback`;
+    }
 }
 
 //오브젝트를 넣어서 만들게되면 가독성도 좋아짐.
@@ -97,6 +104,58 @@ const yuJin3 = IdolModel2.fromObject({
     name: '안유진',
     year: 2003,
 });
+
+const yuJin4 = IdolModel2.fromObject({
+    name: 'test',
+    year: 2005,
+});
+
+
+/**
+ * prototype들은 은닉되기 때문에 따로 빼주는 메서드를 사용해야 합니다.
+ * 그냥 getPrototypeOf 출력하면 {}가 나옵니다.
+ * 
+ * 모든 객체는 [[prototype]] 포인터를 가집니다.
+ * 함수와 클래스는 위의 포인터와 추가로 prototype 프로퍼티를 직접 가집니다.
+ * 이렇게 yuJin3과 yuJin4의 프로퍼티를 직접 조회해보면 각 인스턴스의 프로퍼티 key 값들이 나오는걸 확인할 수 있습니다.
+ * 그리고 PrototypeOf는 [[prototype]] 을 참조하고, 인스턴스의 [[prototype]]에는 클래스의 Prototype 프로퍼티가 지정되어있습니다.
+ * 따라서 조회 결과 공통된 클래스인 IdolModel2의 Prototype이 나오는 것을 확인할 수 있으며.
+ * 우리가 일반 메서드로 작성한 것들은 바로 이 곳에 보관된다는 것을 알 수 있습니다.
+ * 
+ * Static으로 선언된 친구들은 그 바로 위인 IdolModel2의 직속 프로퍼티로 들어가게 됩니다.
+ * 스태틱 필드이건 메서드이건 상관없이 다 한번에 붙는걸 확인할 수 있습니다.
+ * 
+ */
+
+//메서드 Object.getPrototypeOf()를 쓰면 [[prototype]]이 가리키는 prototype 프로퍼티를 참조해서 가져옵니다.
+const proto = Object.getPrototypeOf(yuJin3); 
+console.log(Object.getOwnPropertyNames(proto)); // [ 'constructor', 'testMethode' ]
+console.log(Object.getOwnPropertyNames(yuJin3)); // [ 'name', 'year' ]
+
+
+
+//인스턴스이지만 기본적으로 객체구조이기 때문에 임의추가 저딴거도 가능합니다. ㄷㄷ 사실 객체세상입니다.
+const proto2 = Object.getPrototypeOf(yuJin4);
+ 
+console.log(Object.getOwnPropertyNames(proto2)); // [ 'constructor', 'testMethode' ]
+yuJin4.testField = 'test'; //임의로 하나 집어넣음
+
+//개별적인 프로퍼티를 가지는걸 확인할 수 있습니다. 인스턴스별로 힙에 생성됩니다.
+console.log(Object.getOwnPropertyNames(yuJin4)); // [ 'name', 'year', 'testField' ]
+
+// IdolModel2클래스의 프로토타입 직접조회
+const classProto = IdolModel2.prototype;
+console.log(Object.getOwnPropertyNames(classProto)); //[ 'constructor', 'testMethode' ]
+
+//해당 인스턴스가 prototype 체인을 통해 원본의 prototype 프로퍼티에 접근한다는 사실을 알 수 있습니다.
+console.log(
+    Object.getPrototypeOf(yuJin3)===Object.getPrototypeOf(yuJin4) &&
+    Object.getPrototypeOf(yuJin4)===IdolModel2.prototype
+); // ture
+
+
+// static 메서드, static 필드 확인
+console.log(Object.getOwnPropertyNames(IdolModel2)); // [ 'length', 'name', 'prototype', 'fromObject', 'fromList', 'test' ]
 
 
 
