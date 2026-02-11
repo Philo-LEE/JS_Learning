@@ -15,6 +15,9 @@
 // 아이브라는 이름의 그룹이다.
 // 아이브는 여자 아이돌이다.
 
+/**
+ * 데이터부
+ */
 const iveMembers = [
     {
         name:'안유진',
@@ -75,7 +78,6 @@ const btsMembers = [
 /**
  * 정의부
  */
-
 class Idol{
     name;
     year;
@@ -129,7 +131,6 @@ class Country{
 /**
  * 구현부
  */
-
 //정석법
 const cBtsGroup = btsMembers.map(member => {
     return new MaleIdol(member.name,member.year);
